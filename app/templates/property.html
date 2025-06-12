@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+    <div class="container d-block">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        
+      
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          property
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="index.html">interiors</a></li>
+            <li><a class="dropdown-item" href="exterior.html">exteriors</a></li>
+            <li><a class="dropdown-item" href="extra.html">accessories</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+</div>
+  </head>
+  <body>
+    <h1>Welcome to our houses</h1>
+    <div class="container">
+        <div class="card" style="width: 18rem;">
+  <img src="https://media.istockphoto.com/id/1208206114/photo/beautiful-luxury-home-exterior-at-sunset-featuring-large-covered-patio-with-outdoor-kitchen.jpg?s=612x612&w=0&k=20&c=khBqQyp7qMBAjcO_XIORxmUQz0GYayj1vBcb2q3m3nA=" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">First house</h5>
+    <p class="card-text">well lit & spacious</p>
+    <a href="https://media.istockphoto.com/id/1476189571/photo/living-room-with-fireplace.jpg?s=612x612&w=0&k=20&c=QL5xiw4GvHWoKIRC1KXkgeBMhCwmVxRZ68PV013Yh7M=" class="card-img-top" alt="...">
+" class="btn btn-primary">check it out</a>
+  </div>
+</div>
+
+
+
+<div class="card" style="width: 18rem;">
+  <img src="https://media.istockphoto.com/id/2155899949/photo/large-pool-in-front-of-a-white-house-in-encino-california.jpg?s=612x612&w=0&k=20&c=KXG0Xli4svJSE3OdcXckQYQzZm-1-fZwoV28Z9zjMy0=" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">second house</h5>
+    <p class="card-text">family oriented home</p>
+    <a href="  https://media.istockphoto.com/id/1158770746/photo/shot-of-a-bright-cozy-modern-apartment-with-big-windows-decorations-and-stylish-furniture.jpg?s=612x612&w=0&k=20&c=OZRNqYtvfJzwPpOK8xoEnh4QY1mABVkMD5tCQ0KCDk4=" class="card-img-top" alt="...">
+" class="btn btn-primary">check it out</a>
+  </div>
+</div>
+
+<div class="card" style="width: 18rem;">
+  <img src="https://media.istockphoto.com/id/524085051/photo/beautiful-exterior-of-new-luxury-home-at-twilight.jpg?s=612x612&w=0&k=20&c=wPqEpJkL22wE3NHSCgdWXq2FC8a-KvSCpP7XRIZHuOU=" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">third house</h5>
+    <p class="card-text">spacious.</p>
+    <a href="  https://media.istockphoto.com/id/1434235744/photo/interior-design-of-modern-dining-room-or-living-room-marble-table-and-chairs-wooden-sideboard.jpg?s=612x612&w=0&k=20&c=TcomL-_7ZGZXwJlm3qNISY6gEqyFG-YLweGSyo2_nh8=" class="card-img-top" alt="...">
+" class="btn btn-primary">check it out</a>
+  </div>
+</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  
+  </body>
+</html>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.requester_id.label }}<br>
+        {{ form.requester_id(size=32) }}
+        {% for error in form.requester_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.property_id.label }}<br>
+        {{ form.property_id(size=32) }}
+        {% for error in form.property_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.message.label }}<br>
+        {{ form.message(size=64) }}
+        {% for error in form.message.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.status.label }}<br>
+        {{ form.status(size=32) }}
+        {% for error in form.status.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.created_at.label }}<br>
+        {{ form.created_at(size=32) }}
+        {% for error in form.created_at.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% endblock %}
