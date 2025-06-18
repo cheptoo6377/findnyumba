@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 from app.extension import db
 from flask_restful import Api
 from app.resources.user import Userr,Users
 from app.resources.job import Job,Jobs
-from app.models import RoleModel,UserModel
-from flask_security import SQLAlchemyUserDatastore,hash_password
+from app.models import RoleModel,UserModel,JobModel
+from flask_security import SQLAlchemyUserDatastore,hash_password,verify_password
 import uuid
 
 app = Flask(__name__)
@@ -15,13 +15,7 @@ app.config['SECURITY_PASSWORD_SINGLE_HASH'] = True
 db.init_app(app)
 api=Api(app)
 
-
-
-
-
-
-
-
+user_datastore = SQLAlchemyUserDatastore(db, UserModel, RoleModel)
 
 
 api.add_resource(Users, '/api/users')

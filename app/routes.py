@@ -7,15 +7,12 @@ from app.extension import db
 import uuid
 
 app = Flask(__name__)
+
+
 @app.route('/home')
 def index():
     jobs = JobModel.query.all()
     return render_template('index.html', jobs=jobs)
-
-@app.route('/job/<int:job_id>')
-def job_detail(job_id):
-    job = JobModel.query.get_or_404(job_id)
-    return render_template('job_detail.html', job=job)
 
 from app.models import JobModel, UserModel, RoleModel
 
@@ -71,3 +68,11 @@ def login():
         else:
             flash('Invalid email or password.', 'danger')
     return render_template('login.html')
+
+@app.route('/user/dashboard')
+def user_dashboard():
+    # You need to get the current user, here is a placeholder
+    # Replace with your actual user authentication logic
+    user = UserModel.query.first()  # Example: get the first user
+    user_jobs = JobModel.query.filter_by(user_id=user.id).all() if user else []
+    return render_template('user_dashboard.html', user=user, user_jobs=user_jobs)
