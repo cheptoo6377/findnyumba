@@ -25,7 +25,7 @@
                     {% endif %}                                                   
                 {% endwith %}                                                     
                                                                                   
-                <form method="POST" action="{{ url_for('register') }}" novalidate>                                                                     
+                <form method="POST" action="{{ url_for('main.register') }}" novalidate>                                                                     
                     {{ register_user_form.hidden_tag() }}                         
                                                                                   
                     <div class="row g-3">                                         
@@ -119,7 +119,7 @@
                 </form>                                                           
                                                                                   
                 <div class="footer-links">                                        
-                    <a href="{{ url_for('login') }}">                    
+                    <a href="{{ url_for('main.login') }}">                    
                         <i class="fas fa-sign-in-alt me-1"></i>                   
                         Already have an account? Sign In                          
                     </a>                                                          

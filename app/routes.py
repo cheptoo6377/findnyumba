@@ -1,24 +1,26 @@
-from flask import render_template, request,Flask,redirect,url_for,flash
-from flask_security import roles_required,login_user
-from app.models import JobModel
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_security import roles_required, login_user
+from app.models import JobModel, UserModel, RoleModel
 from app.login import RegisterUserForm
 from flask_security.utils import hash_password, verify_password
 from app.extension import db
+from flask_principal import Identity, identity_changed
+from flask import current_app
 import uuid
 
-app = Flask(__name__)
+main = Blueprint('main', __name__)
 
+@main.route('/')
+def root():
+    return "Welcome to the House Search API!", 200
 
-@app.route('/home')
+@main.route('/home')
 def index():
     jobs = JobModel.query.all()
     return render_template('index.html', jobs=jobs)
 
-from app.models import JobModel, UserModel, RoleModel
-
-
-@app.route('/admin/dashboard')
-@roles_required
+@main.route('/admin/dashboard', endpoint='admin_dashboard')
+@roles_required('admin')
 def admin_dashboard():
     total_users = UserModel.query.count()
     total_jobs = JobModel.query.count()
@@ -32,14 +34,13 @@ def admin_dashboard():
         recent_users=recent_users
     )
 
-
-@app.route('/register', methods=['GET', 'POST'])
+@main.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterUserForm()
     if form.validate_on_submit():
         if UserModel.query.filter_by(email=form.email.data).first():
             flash('Email already registered.', 'danger')
-            return redirect(url_for('register'))
+            return redirect(url_for('main.register'))
         user = UserModel(
             email=form.email.data,
             first_name=form.first_name.data,
@@ -52,10 +53,10 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Registration successful. Please log in.', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
     return render_template('register_user.html', register_user_form=form)
 
-@app.route('/login', methods=['GET', 'POST'])
+@main.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -63,16 +64,16 @@ def login():
         user = UserModel.query.filter_by(email=email).first()
         if user and verify_password(password, user.password):
             login_user(user)
+            # Set up Flask-Principal identity
+            identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
             flash('Logged in successfully.', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('main.index'))
         else:
             flash('Invalid email or password.', 'danger')
     return render_template('login.html')
 
-@app.route('/user/dashboard')
+@main.route('/user/dashboard')
 def user_dashboard():
-    # You need to get the current user, here is a placeholder
-    # Replace with your actual user authentication logic
     user = UserModel.query.first()  # Example: get the first user
     user_jobs = JobModel.query.filter_by(user_id=user.id).all() if user else []
     return render_template('user_dashboard.html', user=user, user_jobs=user_jobs)

@@ -53,6 +53,17 @@ class UserModel(db.Model):
     def has_role(self, role_name):
         return any(role.name == role_name for role in self.roles)
 
+    def verify_and_update_password(self, password):
+        from flask_security.utils import verify_password
+        return verify_password(password, self.password)
+
+    @property
+    def is_active(self):
+        return self.active
+
+    def get_id(self):
+        return str(self.id)
+
 class RoleModel(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -61,3 +72,6 @@ class RoleModel(db.Model):
 
     def __repr__(self):
         return f'<Role {self.name}>'
+
+    def get_permissions(self):
+        return []
