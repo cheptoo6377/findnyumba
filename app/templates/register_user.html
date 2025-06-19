@@ -25,7 +25,7 @@
                     {% endif %}                                                   
                 {% endwith %}                                                     
                                                                                   
-                <form method="POST" action="{{ url_for('main.register') }}" novalidate>                                                                     
+                <form method="POST" action="{{ url_for('main.register') }}">                                                                     
                     {{ register_user_form.hidden_tag() }}                         
                                                                                   
                     <div class="row g-3">                                         

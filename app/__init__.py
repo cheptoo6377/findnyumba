@@ -8,7 +8,8 @@ from flask_security import SQLAlchemyUserDatastore,hash_password,verify_password
 import uuid
 from app import routes  # Register all routes defined in app/routes.py
 from app.routes import main as main_blueprint
-from app.routes import main as jobs_blueprint
+from app.login import csrf
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -22,7 +23,8 @@ user_datastore = SQLAlchemyUserDatastore(db, UserModel, RoleModel)
 security = Security(app, user_datastore)
 
 app.register_blueprint(main_blueprint)
-app.register_blueprint(jobs_blueprint)
+
+csrf.init_app(app)
 
 api.add_resource(Users, '/api/users')
 api.add_resource(Userr, '/api/users/<int:id>')

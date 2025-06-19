@@ -11,7 +11,7 @@
                     <p class="text-muted">System-wide overview and management</p> 
                 </div>                                                            
                 <div>
-                    <a href="#jobs-table" class="btn btn-primary">Manage Jobs</a>
+                
                 </div>
             </div>                                                                
         </div>                                                                    
@@ -62,25 +62,24 @@
                     <th>Title</th>
                     <th>Company</th>
                     <th>Location</th>
-                    <th>Actions</th>
+                    <th>Manage Jobs</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody>`
                 {% for job in jobs %}
                 <tr>
                     <td>{{ job.title }}</td>
                     <td>{{ job.company }}</td>
-                    <td>{{ job.location }}</td>
+                    <td>{{ job.manage }}</td>
                     <td>
+                        <a href="{{ url_for('main.edit_job', id=job.id) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form method="POST" action="{{ url_for('main.delete_job', id=job.id) }}" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this job?');">
-                                <i class="fas fa-trash"></i> Delete
+                                Delete
                             </button>
                         </form>
                     </td>
                 </tr>
-              
-               
                 {% endfor %}
             </tbody>
         </table>

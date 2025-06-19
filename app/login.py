@@ -1,6 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
+from flask_wtf.csrf import CSRFProtect
+
+csrf = CSRFProtect()
 
 class RegisterUserForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(max=100)])

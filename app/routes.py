@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_security import roles_required, login_user
+from flask_security import roles_required, login_user, current_user
 from app.models import JobModel, UserModel, RoleModel
 from app.login import RegisterUserForm
 from flask_security.utils import hash_password, verify_password
@@ -16,6 +16,11 @@ def root():
 
 @main.route('/home')
 def index():
+    if current_user.is_authenticated:
+        if current_user.has_role('admin'):
+            return redirect(url_for('main.admin_dashboard'))
+        elif current_user.has_role('user'):
+            return redirect(url_for('main.user_dashboard'))
     jobs = JobModel.query.all()
     return render_template('index.html', jobs=jobs)
 
@@ -80,9 +85,29 @@ def user_dashboard():
 from flask import Blueprint, render_template
 from app.models import JobModel
 
-main = Blueprint('main', __name__)
+
 
 @main.route('/jobs')
 def jobs():
     jobs = JobModel.query.all()
     return render_template('jobs.html', jobs=jobs)
+
+@main.route('/job/<int:id>/edit', methods=['GET', 'POST'])
+def edit_job(id):
+    job = JobModel.query.get_or_404(id)
+    if request.method == 'POST':
+        job.title = request.form['title']
+        job.company = request.form['company']
+        job.location = request.form['location']
+        db.session.commit()
+        flash('Job updated successfully!', 'success')
+        return redirect(url_for('main.admin_dashboard'))
+    return render_template('edit_job.html', job=job)
+
+@main.route('/job/<int:id>/delete', methods=['POST'])
+def delete_job(id):
+    job = JobModel.query.get_or_404(id)
+    db.session.delete(job)
+    db.session.commit()
+    flash('Job deleted successfully!', 'success')
+    return redirect(url_for('main.admin_dashboard'))
