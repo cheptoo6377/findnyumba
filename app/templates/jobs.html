@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Jobs - Findjob Website{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Available Jobs</h2>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td>{{ job.title }}</td>
+                <td>{{ job.company }}</td>
+                <td>{{ job.location }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" class="text-center">No jobs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary mt-3">Back to Admin Dashboard</a>
+</div>
+{% endblock %}

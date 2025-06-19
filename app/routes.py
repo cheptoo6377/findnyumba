@@ -20,7 +20,7 @@ def index():
     return render_template('index.html', jobs=jobs)
 
 @main.route('/admin/dashboard', endpoint='admin_dashboard')
-@roles_required('admin')
+# @roles_required('admin')
 def admin_dashboard():
     total_users = UserModel.query.count()
     total_jobs = JobModel.query.count()
@@ -77,3 +77,12 @@ def user_dashboard():
     user = UserModel.query.first()  # Example: get the first user
     user_jobs = JobModel.query.filter_by(user_id=user.id).all() if user else []
     return render_template('user_dashboard.html', user=user, user_jobs=user_jobs)
+from flask import Blueprint, render_template
+from app.models import JobModel
+
+main = Blueprint('main', __name__)
+
+@main.route('/jobs')
+def jobs():
+    jobs = JobModel.query.all()
+    return render_template('jobs.html', jobs=jobs)

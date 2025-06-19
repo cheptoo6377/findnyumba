@@ -27,13 +27,13 @@ def setup_initial_data():
 
     # Create admin user
     admin_role = RoleModel.query.filter_by(name='admin').first()
-    admin_user = UserModel.query.filter_by(email='cheptoodorothy69@example.com').first()
+    admin_user = UserModel.query.filter_by(email='admin@example.com').first()
     if not admin_user:
         admin_user = UserModel(
-            email='cheptoodorothy69@example.com',
-            first_name='deom',
-            last_name='cysry',
-            password=('@Cheptoo6377'),
+            email='admin@example.com',
+            first_name='Admin',
+            last_name='User',
+            password=hash_password('4090'),
             active=True,
             roles=[admin_role],
             fs_uniquifier=str(uuid.uuid4())
@@ -41,6 +41,22 @@ def setup_initial_data():
         db.session.add(admin_user)
         db.session.commit()
         print("Admin user created with email:", admin_user.email)
+
+    applicant_role = RoleModel.query.filter_by(name='applicant').first()
+    applicant_user = UserModel.query.filter_by(email='cheptoodorothy69@example.com').first()
+    if not applicant_user:
+        applicant_user = UserModel(
+            email='cheptoodorothy69@example.com',
+            first_name='deom',
+            last_name='cysry',
+            password=('@Cheptoo6377'),
+            active=True,
+            roles=[applicant_role],
+            fs_uniquifier=str(uuid.uuid4())
+        )
+        db.session.add(applicant_user)
+        db.session.commit()
+        print("Applicant user created with email:", applicant_user.email)
 
     # Create applicant user
     applicant_role = RoleModel.query.filter_by(name='applicant').first()
