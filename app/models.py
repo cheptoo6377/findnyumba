@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from app.extension import db
+from flask_login import UserMixin
+from app.models import UserModel
 
 
 #association table
@@ -21,7 +23,7 @@ class JobModel(db.Model):
     def __repr__(self):
         return f'<Job {self.title} at {self.company}>'
 
-class UserModel(db.Model):
+class UserModel(db.Model, UserMixin):
     __tablename__ = 'user'
     #basic identity fields that comes with flask security
     id = db.Column(db.Integer, primary_key=True)
@@ -41,6 +43,7 @@ class UserModel(db.Model):
 
     # roles relationship
     roles = db.relationship('RoleModel', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    jobs = db.relationship('JobModel', backref='user', lazy=True)
 
     def __repr__(self):
         return f"<User {self.email} {self.roles}>"

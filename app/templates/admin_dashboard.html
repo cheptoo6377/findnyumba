@@ -70,7 +70,7 @@
                 <tr>
                     <td>{{ job.title }}</td>
                     <td>{{ job.company }}</td>
-                    <td>{{ job.manage }}</td>
+                    <td>{{ job.location }}</td>
                     <td>
                         <a href="{{ url_for('main.edit_job', id=job.id) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form method="POST" action="{{ url_for('main.delete_job', id=job.id) }}" style="display:inline;">

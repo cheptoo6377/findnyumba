@@ -14,7 +14,7 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-            <form method="POST">
+            <form method="POST" action="{{ url_for('main.login') }}">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address</label>
                     <input type="email" class="form-control" id="email" name="email" required>
@@ -24,6 +24,10 @@
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Login</button>
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{{ url_for('main.forgot_password') }}" class="btn btn-warning" style="font-weight:bold;">Forgot Password?</a>
+                    <a href="{{ url_for('main.reset_password', token='demo-token') }}" class="btn btn-secondary" style="font-weight:bold;">Reset Password</a>
+                </div>
             </form>
         </div>
     </div>

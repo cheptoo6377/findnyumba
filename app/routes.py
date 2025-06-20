@@ -6,9 +6,13 @@ from flask_security.utils import hash_password, verify_password
 from app.extension import db
 from flask_principal import Identity, identity_changed
 from flask import current_app
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 import uuid
 
 main = Blueprint('main', __name__)
+mail = Mail()
+serializer = URLSafeTimedSerializer('your-secret-key')
 
 @main.route('/')
 def root():
@@ -111,3 +115,46 @@ def delete_job(id):
     db.session.commit()
     flash('Job deleted successfully!', 'success')
     return redirect(url_for('main.admin_dashboard'))
+
+@main.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        user = UserModel.query.filter_by(email=email).first()
+        if user:
+            token = serializer.dumps(user.email, salt='password-reset-salt')
+            msg = Message('Password Reset Request',
+                          sender='noreply@findjob.com',
+                          recipients=[email])
+            reset_url = url_for('main.reset_password', token=token, _external=True)
+            msg.body = f"Hello,\n\nTo reset your password, visit the following link:\n{reset_url}\n\nIf you did not request this, please ignore this email."
+            mail.send(msg)
+        flash('If this email exists in our system, a password reset link will be sent.', 'info')
+        return redirect(url_for('main.login'))
+    return render_template('forgot_password.html')
+
+@main.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    try:
+        email = serializer.loads(token, salt='password-reset-salt', max_age=3600)  # 1 hour expiry
+    except SignatureExpired:
+        flash('The password reset link has expired.', 'danger')
+        return redirect(url_for('main.forgot_password'))
+    except BadSignature:
+        flash('Invalid or tampered password reset link.', 'danger')
+        return redirect(url_for('main.forgot_password'))
+    user = UserModel.query.filter_by(email=email).first()
+    if not user:
+        flash('Invalid user.', 'danger')
+        return redirect(url_for('main.forgot_password'))
+    if request.method == 'POST':
+        password = request.form['password']
+        password_confirm = request.form['password_confirm']
+        if password != password_confirm:
+            flash('Passwords do not match.', 'danger')
+            return render_template('reset_password.html', token=token)
+        user.password = hash_password(password)
+        db.session.commit()
+        flash('Your password has been reset. Please log in.', 'success')
+        return redirect(url_for('main.login'))
+    return render_template('reset_password.html', token=token)

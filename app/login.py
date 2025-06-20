@@ -10,8 +10,7 @@ class RegisterUserForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired(), Length(max=100)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(max=150)])
     phone_number = StringField('Phone Number', validators=[Optional(), Length(max=20)])
-    # Remove county_id if not needed, otherwise:
-    # county_id = SelectField('County', coerce=int, validators=[DataRequired()])
+    role = SelectField('Role', choices=[('applicant', 'Applicant'), ('admin', 'Admin')], validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     password_confirm = PasswordField('Confirm Password', validators=[
         DataRequired(), EqualTo('password', message='Passwords must match.')
