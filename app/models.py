@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from app.extension import db
 from flask_login import UserMixin
-from app.models import UserModel
+
 
 
 #association table

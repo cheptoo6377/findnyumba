@@ -50,42 +50,33 @@
                                                                            
     </div>                                                                        
                                                                                   
-    <div class="row">                                                             
-        <!-- Recent Users -->                                                     
-                                                                     
-                         <!-- Jobs Table Example -->
-    <div class="mt-4" id="jobs-table">
-        <h4>All Jobs <a href="{{ url_for('main.jobs') }}" class="btn btn-link btn-sm">(View Jobs Page)</a></h4>
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Company</th>
-                    <th>Location</th>
-                    <th>Manage Jobs</th>
-                </tr>
-            </thead>
-            <tbody>`
-                {% for job in jobs %}
-                <tr>
-                    <td>{{ job.title }}</td>
-                    <td>{{ job.company }}</td>
-                    <td>{{ job.location }}</td>
-                    <td>
-                        <a href="{{ url_for('main.edit_job', id=job.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                  <!--manage jobs  -->
+    <div class="card-body">
+            {% if user_jobs %}
+                <ul>
+                {% for job in user_jobs %}
+                    <li>
+                        {{ job.title }} at {{ job.company }}
+                        <a href="{{ url_for('main.edit_job', id=job.id) }}" class="btn btn-warning btn-sm ms-2">Edit</a>
                         <form method="POST" action="{{ url_for('main.delete_job', id=job.id) }}" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this job?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm ms-2" onclick="return confirm('Are you sure you want to delete this job?');">
                                 Delete
                             </button>
                         </form>
-                    </td>
-                </tr>
+                        <form method="POST" action="{{ url_for('main.approve_job', id=job.id) }}" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-success btn-sm ms-2" {% if job.is_approved %}disabled{% endif %}>
+                                {% if job.is_approved %}Approved{% else %}Approve{% endif %}
+                            </button>
+                        </form>
+                    </li>
                 {% endfor %}
-            </tbody>
-        </table>
+                </ul>
+            {% else %}
+                <p class="text-muted">No jobs found.</p>
+            {% endif %}
+        </div>
     </div>
-                                                                     
-    </div>                                                                        
                                                                                   
-                                                                 
     {% endblock %}

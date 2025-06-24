@@ -79,7 +79,7 @@ def login():
             return redirect(url_for('main.index'))
         else:
             flash('Invalid email or password.', 'danger')
-    return render_template('login.html')
+    return render_template('login_user.html')
 
 @main.route('/user/dashboard')
 def user_dashboard():

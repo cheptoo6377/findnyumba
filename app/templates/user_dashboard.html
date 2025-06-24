@@ -7,18 +7,20 @@
     <h1 class="h3 mb-3">Welcome, {{ user.full_name() }}</h1>
     <p class="text-muted">Here are your recent activities and job applications.</p>
 
-    <!-- User Info Card -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Profile Information</h5>
-            <p><strong>Email:</strong> {{ user.email }}</p>
-            <p><strong>Phone:</strong> {{ user.phone_number or 'N/A' }}</p>
-            <p><strong>Roles:</strong>
+    <!-- User Info Dropdown -->
+    <div class="dropdown mb-4">
+        <button class="btn btn-warning dropdown-toggle" type="button" id="userInfoDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Profile Information
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="userInfoDropdown">
+            <li class="dropdown-item"><strong>Email:</strong> {{ user.email }}</li>
+            <li class="dropdown-item"><strong>Phone:</strong> {{ user.phone_number or 'N/A' }}</li>
+            <li class="dropdown-item"><strong>Roles:</strong>
                 {% for role in user.roles %}
                     <span class="badge bg-secondary">{{ role.name.replace('_', ' ').title() }}</span>
                 {% endfor %}
-            </p>
-        </div>
+            </li>
+        </ul>
     </div>
 
     <!-- User's Job Applications or Jobs Posted -->
@@ -32,6 +34,12 @@
                 {% for job in user_jobs %}
                     <li>
                         {{ job.title }} at {{ job.company }}
+                        {% if job.is_approved %}
+                            <button class="btn btn-success btn-sm ms-2" disabled>Approved</button>
+                        {% endif %}
+                        <!-- You can add logic to enable/disable or show/hide this button based on job status -->
+                        <div>
+                        </div>
                     </li>
                 {% endfor %}
                 </ul>
