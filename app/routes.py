@@ -14,9 +14,6 @@ main = Blueprint('main', __name__)
 mail = Mail()
 serializer = URLSafeTimedSerializer('your-secret-key')
 
-@main.route('/')
-def root():
-    return "Welcome to the House Search API!", 200
 
 @main.route('/home')
 def index():
@@ -45,7 +42,22 @@ def admin_dashboard():
         jobs=jobs
     )
 
-# 
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterUserForm()
+    if form.validate_on_submit():
+        user = UserModel(
+            email=form.email.data,
+            password=hash_password(form.password.data),
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            role=form.role.data
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash('User registered successfully!', 'success')
+        return redirect(url_for('main.login'))
+    return render_template('register_user.html', form=form)
 # @main.route('/login', methods=['GET', 'POST'])
 # def login():
 #     if request.method == 'POST':
