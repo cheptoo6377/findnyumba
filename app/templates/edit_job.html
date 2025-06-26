@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Job - Findjob Website{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Edit Job</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ job.title }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="company" class="form-label">Company</label>
+            <input type="text" class="form-control" id="company" name="company" value="{{ job.company }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" value="{{ job.location }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}

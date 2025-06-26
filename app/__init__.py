@@ -12,6 +12,7 @@ from app.login import csrf
 from app.routes import mail
 
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -27,6 +28,8 @@ app.register_blueprint(main_blueprint)
 
 csrf.init_app(app)
 mail.init_app(app)
+
+
 
 api.add_resource(Users, '/api/users')
 api.add_resource(Userr, '/api/users/<int:id>')

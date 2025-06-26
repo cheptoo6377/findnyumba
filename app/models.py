@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from app.extension import db
-from flask_login import UserMixin
+from flask_security import UserMixin
 
 
 
