@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_security import roles_required, login_user, current_user
+from flask_security import roles_required, login_user, current_user, logout_user
 from app.models import JobModel, UserModel, RoleModel
 from app.login import RegisterUserForm
 from flask_security.utils import hash_password, verify_password
@@ -58,21 +58,32 @@ def register():
         flash('User registered successfully!', 'success')
         return redirect(url_for('main.login'))
     return render_template('register_user.html', form=form)
-# @main.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         email = request.form['email']
-#         password = request.form['password']
-#         user = UserModel.query.filter_by(email=email).first()
-#         if user and verify_password(password, user.password):
-#             login_user(user)
-#             # Set up Flask-Principal identity
-#             identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-#             flash('Logged in successfully.', 'success')
-#             return redirect(url_for('main.index'))
-#         else:
-#             flash('Invalid email or password.', 'danger')
-#     return render_template('login_user.html')
+
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        selected_role = request.form.get('role')
+        user = UserModel.query.filter_by(email=email).first()
+        if user and verify_password(password, user.password):
+            # Check if user has the selected role
+            if selected_role and not user.has_role(selected_role):
+                flash(f'You do not have the {selected_role} role.', 'danger')
+                return render_template('login_user.html')
+            login_user(user)
+            # Set up Flask-Principal identity
+            identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+            flash('Logged in successfully.', 'success')
+            # Redirect based on selected role
+            if selected_role == 'admin':
+                return redirect(url_for('main.admin_dashboard'))
+            elif selected_role == 'user':
+                return redirect(url_for('main.user_dashboard'))
+            return redirect(url_for('main.index'))
+        else:
+            flash('Invalid email or password.', 'danger')
+    return render_template('login_user.html')
 
 @main.route('/user/dashboard')
 def user_dashboard():
@@ -151,3 +162,9 @@ def reset_password(token):
         flash('Your password has been reset. Please log in.', 'success')
         return redirect(url_for('main.login'))
     return render_template('reset_password.html', token=token)
+
+@main.route('/logout')
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('main.login'))
