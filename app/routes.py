@@ -75,12 +75,13 @@ def login():
             # Set up Flask-Principal identity
             identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
             flash('Logged in successfully.', 'success')
-            # Redirect based on selected role
-            if selected_role == 'admin':
+            # Redirect based on selected role and user's actual roles
+            if selected_role == 'admin' and user.has_role('admin'):
                 return redirect(url_for('main.admin_dashboard'))
-            elif selected_role == 'user':
+            elif selected_role == 'user' and user.has_role('user'):
                 return redirect(url_for('main.user_dashboard'))
-            return redirect(url_for('main.index'))
+            else:
+                return redirect(url_for('main.index'))
         else:
             flash('Invalid email or password.', 'danger')
     return render_template('login_user.html')
