@@ -15,13 +15,12 @@ mail = Mail()
 serializer = URLSafeTimedSerializer('your-secret-key')
 
 
-@main.route('/home')
+@main.route('/')
 def index():
-    if current_user.is_authenticated:
-        if current_user.has_role('admin'):
-            return redirect(url_for('main.admin_dashboard'))
-        elif current_user.has_role('user'):
-            return redirect(url_for('main.user_dashboard'))
+    if current_user.is_authenticated and current_user.has_role('admin'):
+        return redirect(url_for('main.admin_dashboard'))
+    elif current_user.has_role('user'):
+        return redirect(url_for('main.user_dashboard'))
     jobs = JobModel.query.all()
     return render_template('index.html', jobs=jobs)
 
