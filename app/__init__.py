@@ -8,22 +8,21 @@ from flask_security import SQLAlchemyUserDatastore,hash_password,verify_password
 import uuid
 from app import routes  # Register all routes defined in app/routes.py
 from app.routes import main as main_blueprint
-from app.login import csrf
+from app.extension import csrf
 from app.routes import mail
+from app.forms.register import CustomRegistrationForm
+from config import Config
 
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = '39363b388a36272b39b2dbee268ff803'  
-app.config['SECURITY_PASSWORD_SINGLE_HASH'] = True 
+app.config.from_object(Config)
 db.init_app(app)
 api=Api(app)
 
-user_datastore = SQLAlchemyUserDatastore(db, UserModel, RoleModel)
-security = Security(app, user_datastore)
 
+user_datastore = SQLAlchemyUserDatastore(db, UserModel, RoleModel)
+security = Security(app, user_datastore, register_form=CustomRegistrationForm)
 app.register_blueprint(main_blueprint)
 
 csrf.init_app(app)

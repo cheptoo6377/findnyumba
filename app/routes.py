@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_security import roles_required, login_user, current_user, logout_user
 from app.models import JobModel, UserModel, RoleModel
-from app.login import RegisterUserForm
+# from app.forms.login import RegisterUserForm
 from flask_security.utils import hash_password, verify_password
 from app.extension import db
 from flask_principal import Identity, identity_changed
@@ -17,15 +17,16 @@ serializer = URLSafeTimedSerializer('your-secret-key')
 
 @main.route('/')
 def index():
-    if current_user.is_authenticated and current_user.has_role('admin'):
-        return redirect(url_for('main.admin_dashboard'))
-    elif current_user.has_role('user'):
-        return redirect(url_for('main.user_dashboard'))
+    if current_user.is_authenticated:
+        if current_user.has_role('admin'):
+            return redirect(url_for('main.admin_dashboard'))
+        elif current_user.has_role('user'):
+            return redirect(url_for('main.user_dashboard'))
     jobs = JobModel.query.all()
     return render_template('index.html', jobs=jobs)
 
 @main.route('/admin/dashboard', endpoint='admin_dashboard')
-# @roles_required('admin')
+@roles_required('admin')
 def admin_dashboard():
     total_users = UserModel.query.count()
     total_jobs = JobModel.query.count()
@@ -40,50 +41,6 @@ def admin_dashboard():
         recent_users=recent_users,
         jobs=jobs
     )
-
-@main.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterUserForm()
-    if form.validate_on_submit():
-        user = UserModel(
-            email=form.email.data,
-            password=hash_password(form.password.data),
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            role=form.role.data
-        )
-        db.session.add(user)
-        db.session.commit()
-        flash('User registered successfully!', 'success')
-        return redirect(url_for('main.login'))
-    return render_template('register_user.html', form=form)
-
-@main.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        selected_role = request.form.get('role')
-        user = UserModel.query.filter_by(email=email).first()
-        if user and verify_password(password, user.password):
-            # Check if user has the selected role
-            if selected_role and not user.has_role(selected_role):
-                flash(f'You do not have the {selected_role} role.', 'danger')
-                return render_template('login_user.html')
-            login_user(user)
-            # Set up Flask-Principal identity
-            identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-            flash('Logged in successfully.', 'success')
-            # Redirect based on selected role and user's actual roles
-            if selected_role == 'admin' and user.has_role('admin'):
-                return redirect(url_for('main.admin_dashboard'))
-            elif selected_role == 'user' and user.has_role('user'):
-                return redirect(url_for('main.user_dashboard'))
-            else:
-                return redirect(url_for('main.index'))
-        else:
-            flash('Invalid email or password.', 'danger')
-    return render_template('login_user.html')
 
 @main.route('/user/dashboard')
 def user_dashboard():
@@ -120,51 +77,3 @@ def delete_job(id):
     flash('Job deleted successfully!', 'success')
     return redirect(url_for('main.admin_dashboard'))
 
-@main.route('/forgot-password', methods=['GET', 'POST'])
-def forgot_password():
-    if request.method == 'POST':
-        email = request.form['email']
-        user = UserModel.query.filter_by(email=email).first()
-        if user:
-            token = serializer.dumps(user.email, salt='password-reset-salt')
-            msg = Message('Password Reset Request',
-                          sender='noreply@findjob.com',
-                          recipients=[email])
-            reset_url = url_for('main.reset_password', token=token, _external=True)
-            msg.body = f"Hello,\n\nTo reset your password, visit the following link:\n{reset_url}\n\nIf you did not request this, please ignore this email."
-            mail.send(msg)
-        flash('If this email exists in our system, a password reset link will be sent.', 'info')
-        return redirect(url_for('main.login'))
-    return render_template('forgot_password.html')
-
-@main.route('/reset-password/<token>', methods=['GET', 'POST'])
-def reset_password(token):
-    try:
-        email = serializer.loads(token, salt='password-reset-salt', max_age=3600)  # 1 hour expiry
-    except SignatureExpired:
-        flash('The password reset link has expired.', 'danger')
-        return redirect(url_for('main.forgot_password'))
-    except BadSignature:
-        flash('Invalid or tampered password reset link.', 'danger')
-        return redirect(url_for('main.forgot_password'))
-    user = UserModel.query.filter_by(email=email).first()
-    if not user:
-        flash('Invalid user.', 'danger')
-        return redirect(url_for('main.forgot_password'))
-    if request.method == 'POST':
-        password = request.form['password']
-        password_confirm = request.form['password_confirm']
-        if password != password_confirm:
-            flash('Passwords do not match.', 'danger')
-            return render_template('reset_password.html', token=token)
-        user.password = hash_password(password)
-        db.session.commit()
-        flash('Your password has been reset. Please log in.', 'success')
-        return redirect(url_for('main.login'))
-    return render_template('reset_password.html', token=token)
-
-@main.route('/logout')
-def logout():
-    logout_user()
-    flash('You have been logged out.', 'info')
-    return redirect(url_for('main.login'))

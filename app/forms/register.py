@@ -1,18 +1,16 @@
-from flask_wtf import FlaskForm
+from flask_security import RegisterForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
-from flask_wtf.csrf import CSRFProtect
 
-csrf = CSRFProtect()
 
-class RegisterUserForm(FlaskForm):
+class CustomRegistrationForm(RegisterForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(max=100)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(max=100)])
-    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=150)])
+    # email = StringField('Email', validators=[DataRequired(), Email(), Length(max=150)])
     phone_number = StringField('Phone Number', validators=[Optional(), Length(max=20)])
-    role = SelectField('Role', choices=[('applicant', 'Applicant'), ('admin', 'Admin')], validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    # role = SelectField('Role', choices=[('applicant', 'Applicant'), ('admin', 'Admin')], validators=[DataRequired()])
+    # password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     password_confirm = PasswordField('Confirm Password', validators=[
         DataRequired(), EqualTo('password', message='Passwords must match.')
     ])
-    submit = SubmitField('Register')
+    # submit = SubmitField('Register')

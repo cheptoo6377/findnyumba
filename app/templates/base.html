@@ -17,9 +17,9 @@
                 {% if not current_user.is_authenticated %}
                      <li><a href="{{ url_for('main.index') }}">Home</a></li>
                      <li><a href="{{ url_for('security.login') }}">Login</a></li>
-                    <li><a href="{{ url_for('main.register') }}">Register</a></li>
+                    <a href="{{ url_for('security.register') }}">Register</a>
                 {% else %}
-                    <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('security.logout') }}">Logout</a></li>
                     <li><a href="{{ url_for('main.profile') }}">Profile</a></li>
                 
                    
