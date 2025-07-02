@@ -1,3 +1,8 @@
+from flask_security import current_user, registerable, utils
+from app.forms.register import CustomRegistrationForm
+
+# Custom registration route for debugging
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_security import roles_required, login_user, current_user, logout_user
 from app.models import JobModel, UserModel, RoleModel
@@ -20,7 +25,7 @@ def index():
     if current_user.is_authenticated:
         if current_user.has_role('admin'):
             return redirect(url_for('main.admin_dashboard'))
-        elif current_user.has_role('user'):
+        elif current_user.has_role('applicant'):
             return redirect(url_for('main.user_dashboard'))
     jobs = JobModel.query.all()
     return render_template('index.html', jobs=jobs)
@@ -77,3 +82,28 @@ def delete_job(id):
     flash('Job deleted successfully!', 'success')
     return redirect(url_for('main.admin_dashboard'))
 
+
+@main.route('/register', methods=['GET', 'POST'])
+def custom_register():
+    from app import user_datastore 
+    form = CustomRegistrationForm()
+    if form.validate_on_submit():
+        # Assign default role 'applicant' on registration
+        user = user_datastore.create_user(
+            email=form.email.data,
+            password=hash_password(form.password.data),
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            phone_number=form.phone_number.data,
+            active=True
+        )
+        applicant_role = user_datastore.find_role('applicant')
+        if applicant_role:
+            user_datastore.add_role_to_user(user, applicant_role)
+        db.session.commit()
+        flash('Registration successful! Please log in.', 'success')
+        return redirect(url_for('security.login'))
+    else:
+        if form.errors:
+            print('Registration form errors:', form.errors)
+    return render_template('security/register_user.html', register_user_form=form)

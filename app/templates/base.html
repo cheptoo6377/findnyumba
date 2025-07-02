@@ -15,18 +15,15 @@
             <ul>
               
                 {% if not current_user.is_authenticated %}
-                     <li><a href="{{ url_for('main.index') }}">Home</a></li>
-                     <li><a href="{{ url_for('security.login') }}">Login</a></li>
-                   <li><a href="{{ url_for('security.register') }}">Register</a></li>
-                {% else %}
+                    <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                    <li><a href="{{ url_for('security.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('security.register') }}">Register</a></li>
+                {% elif current_user.is_authenticated %}
+                    <li><a href="{{ url_for('main.index') }}">Home</a></li>
                     <li><a href="{{ url_for('security.logout') }}">Logout</a></li>
                     <li><a href="{{ url_for('main.profile') }}">Profile</a></li>
-                
-                   
                     <li>
-                        <button class="btn btn-info btn-sm nav-role-btn" >
-                            Role: {{ current_user.roles[0].name if current_user.roles else 'N/A' }}
-                        </button>
+                        
                     </li>
                 {% endif %}
                 

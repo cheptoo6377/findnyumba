@@ -4,29 +4,30 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <h1 class="h3 mb-3">Welcome, {{ user.full_name() }}</h1>
-    <p class="text-muted">Here are your recent activities and job applications.</p>
+    <h1 class="h3 mb-3 fw-bold">Welcome to Your Dashboard</h1>
 
-    <!-- User Info Dropdown -->
-    <div class="dropdown mb-4">
-        <button class="btn btn-warning dropdown-toggle" type="button" id="userInfoDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            Profile Information
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="userInfoDropdown">
-            <li class="dropdown-item"><strong>Email:</strong> {{ user.email }}</li>
-            <li class="dropdown-item"><strong>Phone:</strong> {{ user.phone_number or 'N/A' }}</li>
-            <li class="dropdown-item"><strong>Roles:</strong>
-                {% for role in user.roles %}
-                    <span class="badge bg-secondary">{{ role.name.replace('_', ' ').title() }}</span>
-                {% endfor %}
-            </li>
-        </ul>
+    <!-- User Info Dropdown aligned right -->
+    <div class="d-flex justify-content-end">
+      <div class="dropdown mb-4">
+          <button class="btn btn-warning dropdown-toggle" type="button" id="userInfoDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              Profile Information
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="userInfoDropdown">
+              <li class="dropdown-item"><strong>Email:</strong> {{ user.email }}</li>
+              <li class="dropdown-item"><strong>Phone:</strong> {{ user.phone_number or 'N/A' }}</li>
+              <li class="dropdown-item"><strong>Roles:</strong>
+                  {% for role in user.roles %}
+                      <span class="badge bg-secondary">{{ role.name.replace('_', ' ').title() }}</span>
+                  {% endfor %}
+              </li>
+          </ul>
+      </div>
     </div>
 
     <!-- User's Job Applications or Jobs Posted -->
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title mb-0"><i class="fas fa-briefcase me-2"></i>Your Jobs</h5>
+            <h5 class="card-title mb-0 fw-bold"><i class="fas fa-briefcase me-2 "></i>Your Jobs</h5>
         </div>
         <div class="card-body">
             {% if user_jobs %}
