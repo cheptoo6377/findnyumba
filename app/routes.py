@@ -1,5 +1,6 @@
 from flask_security import current_user, registerable, utils
 from app.forms.register import CustomRegistrationForm
+from app.forms.job_create import JobCreateForm
 
 # Custom registration route for debugging
 
@@ -23,8 +24,13 @@ serializer = URLSafeTimedSerializer('your-secret-key')
 @main.route('/')
 def index():
     if current_user.is_authenticated:
-        if current_user.has_role('admin'):
+        # Only allow the predefined admin user (by email) to access admin dashboard
+        if current_user.has_role('admin') and current_user.email == 'admin@example.com':
             return redirect(url_for('main.admin_dashboard'))
+        elif current_user.has_role('admin'):
+            flash('You are not authorized as the system admin.', 'danger')
+            logout_user()
+            return redirect(url_for('security.login'))
         elif current_user.has_role('applicant'):
             return redirect(url_for('main.user_dashboard'))
     jobs = JobModel.query.all()
@@ -57,10 +63,22 @@ from app.models import JobModel
 
 
 
-@main.route('/jobs')
+@main.route('/jobs', methods=['GET', 'POST'])
 def jobs():
+    form = JobCreateForm()
+    if form.validate_on_submit():
+        new_job = JobModel(
+            title=form.title.data,
+            description=form.description.data,
+            company=form.company.data,
+            user_id=form.user_id.data
+        )
+        db.session.add(new_job)
+        db.session.commit()
+        flash('Job created successfully!', 'success')
+        return redirect(url_for('main.jobs'))
     jobs = JobModel.query.all()
-    return render_template('jobs.html', jobs=jobs)
+    return render_template('jobs.html', jobs=jobs, form=form)
 
 @main.route('/job/<int:id>/edit', methods=['GET', 'POST'])
 def edit_job(id):

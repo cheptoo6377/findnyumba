@@ -1,3 +1,25 @@
+/* User Dashboard - Job Applications/Jobs Posted Section */
+.user-jobs-section {
+    background: linear-gradient(135deg, #f8fafc 60%, #e3e6ed 100%);
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 2rem 1.5rem;
+    border: 1px solid #e0e0e0;
+}
+.user-jobs-section .card-title {
+    color: #35424a;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.user-jobs-section .list-group-item {
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(53,66,74,0.06);
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -101,7 +123,7 @@ header h1 {
     min-height: 60vh;
 }
 .login-card {
-    background: #fff;
+    background: #e2abab;
     border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     padding: 2.5rem 2rem 2rem 2rem;

@@ -3,8 +3,9 @@
 {% block title %}User Dashboard{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <h1 class="h3 mb-3 fw-bold">Welcome to Your Dashboard</h1>
+<div class="container">
+    <div class="dashboard-container">
+        <h1 class="h3 mb-3 fw-bold text-center">Welcome to Your Dashboard</h1>
 
     <!-- User Info Dropdown aligned right -->
     <div class="d-flex justify-content-end">
@@ -23,13 +24,13 @@
           </ul>
       </div>
     </div>
-
+</div>
     <!-- User's Job Applications or Jobs Posted -->
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title mb-0 fw-bold"><i class="fas fa-briefcase me-2 "></i>Your Jobs</h5>
+    <div class="user-jobs-section">
+        <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0 fw-bold text-center"><i class="fas fa-briefcase me-2 "></i>Your Jobs</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body p-0 pt-3">
             {% if user_jobs %}
                 <ul class="list-group list-group-flush">
                 {% for job in user_jobs %}
