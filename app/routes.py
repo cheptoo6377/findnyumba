@@ -3,6 +3,7 @@ from app.forms.register import CustomRegistrationForm
 from app.forms.job_create import JobCreateForm
 
 # Custom registration route for debugging
+from app.extension import csrf
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_security import roles_required, login_user, current_user, logout_user
@@ -64,6 +65,9 @@ from app.models import JobModel
 
 
 @main.route('/jobs', methods=['GET', 'POST'])
+
+
+@csrf.exempt
 def jobs():
     form = JobCreateForm()
     if form.validate_on_submit():

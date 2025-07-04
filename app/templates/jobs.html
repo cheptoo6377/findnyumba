@@ -4,46 +4,51 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Available Jobs</h2>
 
-    <!-- Job Creation Form -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Add New Job</h5>
-            <!-- Flask-WTF form: includes CSRF token automatically -->
-            <form method="POST" action="{{ url_for('main.jobs') }}">
-                {{ form.hidden_tag() }} {# This includes the CSRF token automatically #}
-                <div class="row">
-                    <div class="col-md-3 mb-2">
-                        {{ form.title.label(class="form-label") }}
-                        {{ form.title(class="form-control") }}
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        {{ form.company.label(class="form-label") }}
-                        {{ form.company(class="form-control") }}
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        {{ form.description.label(class="form-label") }}
-                        {{ form.description(class="form-control") }}
-                    </div>
-                    <div class="col-md-2 mb-2">
-                        {{ form.user_id.label(class="form-label") }}
-                        {{ form.user_id(class="form-control") }}
-                    </div>
-                    <div class="col-md-1 mb-2 d-flex align-items-end">
-                        {{ form.submit(class="btn btn-primary") }}
-                    </div>
+   <!-- Job Creation Form -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Add New Job</h5>
+        <!-- Flask-WTF form: includes CSRF token automatically -->
+        <form method="POST" action="{{ url_for('main.jobs') }}">
+            <div style="display:none;">
+                {{ form.csrf_token }}
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control") }}
                 </div>
-            </form>
-        </div>
+                <div class="col-md-3 mb-2">
+                    {{ form.company.label(class="form-label") }}
+                    {{ form.company(class="form-control") }}
+                </div>
+                <div class="col-md-3 mb-2">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control") }}
+                </div>
+                <div class="col-md-2 mb-2">
+                    {{ form.user_id.label(class="form-label") }}
+                    {{ form.user_id(class="form-control") }}
+                </div>
+
+                <!-- Visually aligned button -->
+                <div class="col-md-1 mb-2 d-flex align-items-end">
+                    {{ form.submit(class="btn btn-primary w-100") }}
+                </div>
+            </div>
+        </form>
     </div>
+</div>
+<h2 class="mb-4">Available Jobs</h2>
+
 
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th>Title</th>
                 <th>Company</th>
-                <th>Location</th>
+                <th>Description</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -52,11 +57,11 @@
             <tr>
                 <td>{{ job.title }}</td>
                 <td>{{ job.company }}</td>
-                <td>{{ job.location }}</td>
+                <td>{{ job.description }}</td>
                 <td>
                     <!-- Manual form: insert CSRF token manually -->
                     <form method="POST" action="{{ url_for('main.delete_job', id=job.id) }}" style="display:inline;">
-                        {{ csrf_token() }} {# Manually insert CSRF token for delete form #}
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this job?');">Delete</button>
                     </form>
                 </td>

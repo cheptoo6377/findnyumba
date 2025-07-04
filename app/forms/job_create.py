@@ -7,4 +7,4 @@ class JobCreateForm(FlaskForm):
     description = TextAreaField('Description', validators=[DataRequired()])
     company = StringField('Company', validators=[DataRequired()])
     user_id = IntegerField('User ID', validators=[DataRequired()])
-    submit = SubmitField('Create Job')
+    submit = SubmitField('Submit')
