@@ -25,56 +25,11 @@ def setup_initial_data():
             db.session.add(role)
     db.session.commit()
 
-    # Create admin user
-    admin_role = RoleModel.query.filter_by(name='admin').first()
-    admin_user = UserModel.query.filter_by(email='admin@example.com').first()
-    if not admin_user:
-        admin_user = UserModel(
-            email='admin@example.com',
-            first_name='Admin',
-            last_name='User',
-            password=hash_password('4090'),
-            active=True,
-            roles=[admin_role],
-            fs_uniquifier=str(uuid.uuid4())
-        )
-        db.session.add(admin_user)
-        db.session.commit()
-        print("Admin user created with email:", admin_user.email)
+    # Create admin user if not exists
+    
+      
 
-    applicant_role = RoleModel.query.filter_by(name='applicant').first()
-    applicant_user = UserModel.query.filter_by(email='cheptoodorothy69@example.com').first()
-    if not applicant_user:
-        applicant_user = UserModel(
-            email='cheptoodorothy69@example.com',
-            first_name='deom',
-            last_name='cysry',
-            password=('@Cheptoo6377'),
-            active=True,
-            roles=[applicant_role],
-            fs_uniquifier=str(uuid.uuid4())
-        )
-        db.session.add(applicant_user)
-        db.session.commit()
-        print("Applicant user created with email:", applicant_user.email)
-
-    # Create applicant user
-    applicant_role = RoleModel.query.filter_by(name='applicant').first()
-    applicant_user = UserModel.query.filter_by(email='applicant@example.com').first()
-    if not applicant_user:
-        applicant_user = UserModel(
-            email='applicant@example.com',
-            first_name='Jane',
-            last_name='Doe',
-            password=('12345'),
-            active=True,
-            roles=[applicant_role],
-            fs_uniquifier=str(uuid.uuid4())
-        )
-        db.session.add(applicant_user)
-        db.session.commit()
-        print("Applicant user created with email:", applicant_user.email)
-
+ 
 with app.app_context():
     db.create_all()
     setup_initial_data()

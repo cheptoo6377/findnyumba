@@ -1,3 +1,5 @@
+# Ensure user loader is set for Flask-Login
+
 from flask import Flask, jsonify, request
 from app.extension import db
 from flask_restful import Api
@@ -6,14 +8,20 @@ from app.resources.job import Job,Jobs
 from app.models import RoleModel,UserModel,JobModel
 from flask_security import SQLAlchemyUserDatastore,hash_password,verify_password, Security
 from flask_jwt_extended import JWTManager
+from flask_login import LoginManager
 import uuid
 from app import routes  # Register all routes defined in app/routes.py
 from app.routes import main as main_blueprint
 from app.extension import csrf
 from app.routes import mail
 from app.forms.register import CustomRegistrationForm
+from app.forms.login import CustomLoginForm
 from config import Config
 from app.resources.api_bp import api_bp
+
+
+
+
 
 
 
@@ -22,9 +30,13 @@ app.config.from_object(Config)
 db.init_app(app)
 api=Api(app)
 
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 
 user_datastore = SQLAlchemyUserDatastore(db, UserModel, RoleModel)
-security = Security(app, user_datastore, register_form=CustomRegistrationForm)
+security = Security(app, user_datastore, register_form=CustomRegistrationForm, login_form=CustomLoginForm)
 app.register_blueprint(main_blueprint)
 
 csrf.init_app(app)
@@ -43,16 +55,10 @@ api.add_resource(Job, '/api/jobs/<int:id>')
 
 
 # Example login route for JWT token generation
-@app.route('/api/login', methods=['POST'])
-def api_login():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
-    user = UserModel.query.filter_by(email=email).first()
-    if user and verify_password(password, user.password):
-        access_token = create_access_token(identity=user.id)
-        return jsonify(access_token=access_token), 200
-    return jsonify({'msg': 'Bad email or password'}), 401
 
+@login_manager.user_loader
+def load_user(user_id):
+    return UserModel.query.get(int(user_id))
 # Register the API blueprint (if not already registered)
 app.register_blueprint(api_bp)
+

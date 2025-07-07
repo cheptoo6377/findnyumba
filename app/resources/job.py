@@ -27,18 +27,19 @@ class Jobs(Resource):
     def post(self):
         data = request.get_json()
 
-        # Validate required fields
-        required_fields = ['title', 'description', 'company', 'user_id']
+        # Validate required fields (user_id is not required from client)
+        required_fields = ['title', 'description', 'company']
         missing = [field for field in required_fields if not data.get(field)]
         if missing:
             return {'message': 'Missing required fields', 'missing': missing}, 400
 
-        # Create new job instance
+        # Optionally assign job to a user if user_id is provided (e.g., by employer)
+        user_id = data.get('user_id')
         new_job = JobModel(
             title=data['title'],
             description=data['description'],
             company=data['company'],
-            user_id=data['user_id']
+            user_id=user_id if user_id else None
         )
         db.session.add(new_job)
         db.session.commit()

@@ -7,7 +7,7 @@
   <div class="login-card">
     {% include "security/_messages.html" %}
     <h2>{{ _fsdomain('Login') }}</h2>
-    <form action="{{ url_for_security('login') }}{{ prop_next() }}" method="post" name="login_user_form">
+    <form action="{{ url_for('main.custom_login') }}" method="post" name="login_user_form">
       {{ login_user_form.hidden_tag() }}
       {{ render_form_errors(login_user_form) }}
       {% if login_user_form.email and "email" in identity_attributes %}
@@ -28,6 +28,13 @@
         {{ render_field_with_errors(login_user_form.remember) }}
       </div>
       {{ render_field_errors(login_user_form.csrf_token) }}
+      {# Only show the role field if it is not already rendered elsewhere #}
+      {% if login_user_form.role %}
+        <div class="form-group">
+          <label for="role"></label>
+          {{ render_field_with_errors(login_user_form.role, class_='form-control') }}
+        </div>
+      {% endif %}
       <div class="form-group">
         {{ render_field(login_user_form.submit, class_='btn btn-primary') }}
       </div>
