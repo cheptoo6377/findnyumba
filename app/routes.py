@@ -9,7 +9,8 @@ from app.extension import csrf
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_security import roles_required, login_user, current_user, logout_user
-from app.models import JobModel, UserModel, RoleModel
+from app.models import JobModel, UserModel, RoleModel, JobApplication
+from flask import session
 # from app.forms.login import RegisterUserForm
 from flask_security.utils import hash_password, verify_password
 from app.extension import db
@@ -62,11 +63,27 @@ def user_dashboard():
 
 @main.route('/apply/<int:job_id>', methods=['POST'])
 def apply_to_job(job_id):
-    job = JobModel.query.get_or_404(job_id)
-    
-    db.session.commit()
+   
 
-    return render_template('your_jobs.html')
+    job = JobModel.query.get_or_404(job_id)
+
+ 
+
+    new_application = JobApplication( job_id=job_id, user_id=UserModel.query.first().id)  # Assuming you want the first user for demonstration
+    db.session.add(new_application)
+    db.session.commit()
+    flash('Application submitted successfully!', 'success')
+    return render_template('your_jobs.html', job=job)
+@main.route('/your-jobs')
+def user_jobs():
+    user_id = UserModel.query.all().first().id  # Assuming you want the first user for demonstration
+   
+
+    applications = JobApplication.query.filter_by(user_id=user_id).all()
+    user_jobs = [app.job for app in applications]
+
+    return render_template('your_jobs.html', user_jobs=user_jobs)
+
 
 from flask import Blueprint, render_template
 from app.models import JobModel

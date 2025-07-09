@@ -35,7 +35,11 @@ api=Api(app)
 
 
 user_datastore = SQLAlchemyUserDatastore(db, UserModel, RoleModel)
+
 security = Security(app, user_datastore, register_form=CustomRegistrationForm, )
+# Initialize Flask-Security with custom user datastore and registration form
+ # Create database tables
+
 app.register_blueprint(main_blueprint)
 
 csrf.init_app(app)

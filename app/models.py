@@ -41,6 +41,8 @@ class UserModel(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime())
     created_at = db.Column(db.DateTime(), default=db.func.current_timestamp())
     fs_uniquifier = db.Column(db.String(255), unique=True, nullable=False)
+    applications = db.relationship('JobApplication', backref='user', lazy=True)
+
 
     # roles relationship
     roles = db.relationship('RoleModel', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
@@ -82,3 +84,10 @@ class RoleModel(db.Model):
     def get_permissions(self):
         return []
     
+class JobApplication(db.Model):
+    __tablename__ = 'job_application'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
+    applied_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    job = db.relationship('JobModel', backref='applications')
