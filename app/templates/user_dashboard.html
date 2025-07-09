@@ -48,6 +48,9 @@
                             </div>
                             <div>
                                 <form method="post" action="{{ url_for('main.apply_to_job', job_id=job.id) }}" style="display:inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="job_id" value="{{ job.id }}">
+                                  
                                     <button class="btn btn-outline-success btn-sm" type="submit">Apply</button>
                                 </form>
                             </div>
@@ -61,30 +64,7 @@
         </div>
     </div>
     <!-- User's Job Applications or Jobs Posted -->
-    <div class="user-jobs-section">
-        <div class="card-header bg-transparent border-0">
-            <h5 class="card-title mb-0 fw-bold text-center"><i class="fas fa-briefcase me-2 "></i>Your Jobs</h5>
-        </div>
-        <div class="card-body p-0 pt-3">
-            {% if user_jobs %}
-                <ul class="list-group list-group-flush">
-                {% for job in user_jobs %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="fw-bold">{{ job.title }}</span> at <span class="text-primary">{{ job.company }}</span>
-                        </div>
-                        {% if job.is_approved %}
-                            <span class="badge bg-success">Approved</span>
-                        {% else %}
-                            <span class="badge bg-secondary">Pending</span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-muted">You have not  applied to any jobs yet.</p>
-            {% endif %}
-        </div>
+    
     </div>
 
   

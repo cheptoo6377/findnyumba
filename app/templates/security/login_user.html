@@ -3,66 +3,78 @@
 {% from "security/_macros.html" import render_field_with_errors, render_field, render_field_errors, render_form_errors, prop_next %}
 
 {% block content %}
-<div class="login-container">
-  <div class="login-card">
-    {% include "security/_messages.html" %}
-    <h2>{{ _fsdomain('Login') }}</h2>
-    <form action="{{ url_for('main.custom_login') }}" method="post" name="login_user_form">
-      {{ login_user_form.hidden_tag() }}
-      {{ render_form_errors(login_user_form) }}
-      {% if login_user_form.email and "email" in identity_attributes %}
-        <div class="form-group">
-          {{ render_field_with_errors(login_user_form.email, class_='form-control', placeholder='Email') }}
-        </div>
-      {% endif %}
-      {% if login_user_form.username and "username" in identity_attributes %}
-        {% if login_user_form.email and "email" in identity_attributes %}<h3 style="text-align:center;">{{ _fsdomain("or") }}</h3>{% endif %}
-        <div class="form-group">
-          {{ render_field_with_errors(login_user_form.username, class_='form-control', placeholder='Username') }}
-        </div>
-      {% endif %}
-      <div class="form-group fs-gap">
-        {{ render_field_with_errors(login_user_form.password, class_='form-control', placeholder='Password') }}
-      </div>
-      <div class="form-group">
-        {{ render_field_with_errors(login_user_form.remember) }}
-      </div>
-      {{ render_field_errors(login_user_form.csrf_token) }}
-      {# Only show the role field if it is not already rendered elsewhere #}
-      {% if login_user_form.role %}
-        <div class="form-group">
-          <label for="role"></label>
-          {{ render_field_with_errors(login_user_form.role, class_='form-control') }}
-        </div>
-      {% endif %}
-      <div class="form-group">
-        {{ render_field(login_user_form.submit, class_='btn btn-primary') }}
-      </div>
-    </form>
-    {% if security.webauthn %}
-      <hr class="fs-gap">
-      <h2 style="font-size:1.1rem;">{{ _fsdomain("Use WebAuthn to Sign In") }}</h2>
-      <div>
-        <form method="get" id="wan_signin_form" name="wan_signin_form">
-          <input id="wan_signin" name="wan_signin" type="submit" value="{{ _fsdomain('Sign in with WebAuthn') }}" formaction="{{ url_for_security('wan_signin') }}{{ prop_next() }}" class="btn btn-warning">
-        </form>
-      </div>
-    {% endif %}
-    {% if security.oauthglue %}
-      <hr class="fs-gap">
-      <h2 style="font-size:1.1rem;">{{ _fsdomain("Use Social Oauth to Sign In") }}</h2>
-      {% for provider in security.oauthglue.provider_names %}
-        <div class="fs-gap">
-          <form method="post" id="{{ provider }}_form" name="{{ provider }}_form">
-            <input id="{{ provider }}" name="{{ provider }}" type="submit" value="{{ _fsdomain('Sign in with %(provider)s', provider=provider) }}" formaction="{{ url_for_security('oauthstart', name=provider) }}{{ prop_next() }}" class="btn btn-warning">
-            {% if csrf_token is defined %}
-              <input id="{{ provider }}_csrf_token" name="{{ provider }}_csrf_token" type="hidden" value="{{ csrf_token() }}">
+<div class="container login-container">
+  <div class="row justify-content-center login-card">
+  
+      {% include "security/_messages.html" %}
+      <div class="card shadow">
+        <div class="card-body p-4">
+          <h2 class="text-center mb-4">{{ _fsdomain('Login') }}</h2>
+          
+          <form action="{{ url_for_security('login') }}{{ prop_next() }}" method="post" name="login_user_form">
+            {{ login_user_form.hidden_tag() }}
+            {{ render_form_errors(login_user_form) }}
+            
+            {% if login_user_form.email and "email" in identity_attributes %}
+              <div class="form-group">
+                {{ render_field_with_errors(login_user_form.email, class_='form-control', placeholder='Email') }}
+              </div>
             {% endif %}
+            
+            {% if login_user_form.username and "username" in identity_attributes %}
+              {% if login_user_form.email and "email" in identity_attributes %}
+                <div class="text-center mb-3"><strong>{{ _fsdomain("or") }}</strong></div>
+              {% endif %}
+              <div class="mb-3">
+                {{ render_field_with_errors(login_user_form.username, class_='form-control', placeholder='Username') }}
+              </div>
+            {% endif %}
+
+            <div class="mb-3">
+              {{ render_field_with_errors(login_user_form.password, class_='form-control', placeholder='Password') }}
+            </div>
+
+            <div class="form-check mb-3">
+              {{ render_field_with_errors(login_user_form.remember, class_='form-check-input') }}
+            </div>
+
+            {{ render_field_errors(login_user_form.csrf_token) }}
+
+            <div class="d-grid">
+              {{ render_field(login_user_form.submit, class_='btn btn-primary') }}
+            </div>
           </form>
+
+          {% if security.webauthn %}
+            <hr class="my-4">
+            <h5 class="text-center">{{ _fsdomain("Use WebAuthn to Sign In") }}</h5>
+            <form method="get" id="wan_signin_form" name="wan_signin_form" class="text-center">
+              <input id="wan_signin" name="wan_signin" type="submit"
+                     value="{{ _fsdomain('Sign in with WebAuthn') }}"
+                     formaction="{{ url_for_security('wan_signin') }}{{ prop_next() }}"
+                     class="btn btn-warning mt-2">
+            </form>
+          {% endif %}
+
+          {% if security.oauthglue %}
+            <hr class="my-4">
+            <h5 class="text-center">{{ _fsdomain("Use Social Oauth to Sign In") }}</h5>
+            {% for provider in security.oauthglue.provider_names %}
+              <form method="post" id="{{ provider }}_form" name="{{ provider }}_form" class="text-center mb-2">
+                <input id="{{ provider }}" name="{{ provider }}" type="submit"
+                       value="{{ _fsdomain('Sign in with %(provider)s', provider=provider) }}"
+                       formaction="{{ url_for_security('oauthstart', name=provider) }}{{ prop_next() }}"
+                       class="btn btn-outline-secondary">
+                {% if csrf_token is defined %}
+                  <input id="{{ provider }}_csrf_token" name="{{ provider }}_csrf_token"
+                         type="hidden" value="{{ csrf_token() }}">
+                {% endif %}
+              </form>
+            {% endfor %}
+          {% endif %}
         </div>
-      {% endfor %}
-    {% endif %}
-   
+      </div>
+    </div>
   </div>
 </div>
 {% endblock content %}

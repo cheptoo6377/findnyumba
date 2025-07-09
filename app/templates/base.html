@@ -14,7 +14,7 @@
             <ul>
                 {% if not current_user.is_authenticated %}
                     <li><a href="{{ url_for('main.index') }}">Home</a></li>
-                    <li><a href="{{ url_for('main.custom_login') }}">Login</a></li>
+                    <li><a href="{{ url_for('security.login') }}">Login</a></li>
                     <li><a href="{{ url_for('security.register') }}">Register</a></li>
                 {% else %}
                     <li><a href="{{ url_for('main.index') }}">Home</a></li>
@@ -33,7 +33,8 @@
         </nav>
     </header>
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+        <li><a href="{{ url_for('main.your_jobs') }}">Your Jobs</a></li>{% endblock %}
     </main>
     <footer class="footer mt-auto py-3 border-top" style="margin-top: 2rem; margin-bottom: 1rem;">
         <div class="container text-center">

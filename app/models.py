@@ -48,6 +48,8 @@ class UserModel(db.Model, UserMixin):
 
     def __repr__(self):
         return f"<User {self.email} {self.roles}>"
+    def is_active(self):
+        return self.active
 
     def full_name(self):
         if self.first_name and self.last_name:
@@ -79,3 +81,4 @@ class RoleModel(db.Model):
 
     def get_permissions(self):
         return []
+    
